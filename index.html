@@ -822,24 +822,22 @@
           </div>
         </div>
         <div class="fade-up">
-          <div class="contact-form">
-            <form action="https://api.web3forms.com/submit" method="POST">
-              <!-- Hidden access key -->
-              <input
-                type="hidden"
-                name="access_key"
-                value="bf01ed7b-b1d4-499f-8c86-e921c64bb595"
-              />
+     <div class="contact-form">
+  <div id="cf-error" style="display:none; align-items:center; gap:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(220,80,80,0.4); padding:0.9rem 1rem; margin-bottom:1rem;">
+    <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#f87171;fill:none;stroke-width:1.5;flex-shrink:0;">
+      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    <span style="font-size:0.82rem;color:rgba(247,246,242,0.7);letter-spacing:0.04em;">Please fill in all fields before sending.</span>
+  </div>
 
-              <input type="text" name="name" placeholder="Your name" />
-              <input type="email" name="email" placeholder="Your email" />
-              <textarea
-                name="message"
-                placeholder="Tell me about your project…"
-              ></textarea>
-              <button class="btn-send" type="submit">Send Message →</button>
-            </form>
-          </div>
+  <form action="https://api.web3forms.com/submit" method="POST" id="contact-form">
+    <input type="hidden" name="access_key" value="bf01ed7b-b1d4-499f-8c86-e921c64bb595" />
+    <input type="text" name="name" id="cf-name" placeholder="Your name" />
+    <input type="email" name="email" id="cf-email" placeholder="Your email" />
+    <textarea name="message" id="cf-message" placeholder="Tell me about your project…"></textarea>
+    <button class="btn-send" type="button" onclick="handleSend()">Send Message →</button>
+  </form>
+</div>
         </div>
       </div>
     </section>
@@ -873,12 +871,26 @@
         .forEach((el) => observer.observe(el));
 
       // Contact form
-      function handleSend() {
-        const btn = document.querySelector(".btn-send");
-        btn.textContent = "Message Sent ✓";
-        btn.style.background = "#3b6d11";
-        btn.disabled = true;
-      }
+ function handleSend() {
+  const name = document.getElementById('cf-name').value.trim();
+  const email = document.getElementById('cf-email').value.trim();
+  const message = document.getElementById('cf-message').value.trim();
+  const errorBox = document.getElementById('cf-error');
+
+  if (!name || !email || !message) {
+    errorBox.style.display = 'flex';
+    errorBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    return;
+  }
+
+  errorBox.style.display = 'none';
+  document.getElementById('contact-form').submit();
+
+  const btn = document.querySelector('.btn-send');
+  btn.textContent = 'Message Sent ✓';
+  btn.style.background = '#27500a';
+  btn.disabled = true;
+}
 
       // ── Gallery filter ──
       document.querySelectorAll(".filter-btn").forEach((btn) => {
@@ -953,39 +965,6 @@
         if (e.key === "ArrowRight") shiftLight(1);
         if (e.key === "ArrowLeft") shiftLight(-1);
       });
-
-      // ── Upload handler ──
-      function handleUpload(e) {
-        const files = [...e.target.files];
-        const grid = document.getElementById("gallery");
-        const uploadCard = grid.querySelector(".upload-card");
-        files.forEach((file, i) => {
-          const url = URL.createObjectURL(file);
-          const idx = grid.querySelectorAll(".gallery-item").length;
-          const div = document.createElement("div");
-          div.className = "gallery-item fade-up";
-          div.dataset.cat = "all";
-          div.dataset.index = idx;
-          div.dataset.title = file.name.replace(/\.[^.]+$/, "");
-          div.dataset.desc = "Uploaded work sample.";
-          div.dataset.type = "Work";
-          div.innerHTML = `
-          <img class="gallery-thumb" src="${url}" alt="${div.dataset.title}" />
-          <div class="gallery-overlay">
-            <h4>${div.dataset.title}</h4>
-            <p>Uploaded work sample.</p>
-            <div class="gallery-overlay-meta">
-              <span class="tag">Work</span>
-              <div class="gallery-expand"><svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
-            </div>
-          </div>`;
-          grid.insertBefore(div, uploadCard);
-          observer.observe(div);
-          setTimeout(() => div.classList.add("visible"), 50 * i);
-          div.addEventListener("click", () => openLightbox(div));
-        });
-        e.target.value = "";
-      }
     </script>
   </body>
 </html>
