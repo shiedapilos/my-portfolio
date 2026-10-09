@@ -971,8 +971,46 @@ footer p {
     gap: 0.5rem;
     text-align: center;
   }
+}
 
-  /* ── Glass toggle switch ── */
+/* ═══════════════════════════════════════════
+   DARK MODE  (everything below is new)
+   ═══════════════════════════════════════════ */
+
+/* Dark palette: redefine the same variables the page already uses */
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --ink: #f1efe8;
+  --ink-2: #b4b1a6;
+  --ink-3: #7f7d75;
+  --bg: #14130f;
+  --bg-card: #1c1b17;
+  --border: rgba(247, 246, 242, 0.12);
+  --accent: #8fc25a;
+  --accent-light: rgba(143, 194, 90, 0.15);
+}
+
+/* Things that use hard-coded colors */
+html[data-theme="dark"] nav { background: rgba(20, 19, 15, 0.88); }
+html[data-theme="dark"] .hero-image-inner { border-color: rgba(255, 255, 255, 0.12); }
+html[data-theme="dark"] .hero-img-placeholder { background: var(--bg-card); }
+html[data-theme="dark"] .hero-img-placeholder:hover { background: var(--accent-light); }
+html[data-theme="dark"] .gallery-placeholder {
+  background: linear-gradient(135deg, #1c1b17 0%, #26251f 100%);
+}
+
+/* These use var(--ink) as a background, so give them a fixed dark color */
+html[data-theme="dark"] #contact,
+html[data-theme="dark"] footer { background: #0c0b09; }
+
+/* Keep the green send button readable (accent is lighter in dark mode) */
+html[data-theme="dark"] .btn-send { background: #3b6d11; }
+
+/* Slightly soften photos */
+html[data-theme="dark"] .gallery-thumb,
+html[data-theme="dark"] .hero-image-frame img { filter: brightness(0.92); }
+
+/* ── Glass toggle switch ── */
 .nav-links { margin-left: auto; }
 
 #theme-toggle {
@@ -1045,7 +1083,17 @@ html[data-theme="dark"] .switch-thumb { transform: translateX(26px); }
 #theme-toggle:active .switch-thumb { width: 29px; }
 html[data-theme="dark"] #theme-toggle:active .switch-thumb { transform: translateX(21px); }
 
+/* On phones the nav links are hidden, so push the switch to the right */
 @media (max-width: 768px) {
   #theme-toggle { margin-left: auto; }
 }
+
+/* ── Smooth color fade (class is added by JS only while switching) ── */
+html.theme-anim *,
+html.theme-anim *::before,
+html.theme-anim *::after {
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s !important;
+}
+html.theme-anim .switch-thumb {
+  transition: transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1), width 0.2s !important;
 }
