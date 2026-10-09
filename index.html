@@ -976,6 +976,23 @@
         if (e.key === "ArrowRight") shiftLight(1);
         if (e.key === "ArrowLeft") shiftLight(-1);
       });
+
+      // ── Dark mode switch ──
+const themeToggle = document.getElementById("theme-toggle");
+
+function syncSwitch() {
+  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+  themeToggle.setAttribute("aria-checked", isDark);
+}
+syncSwitch();
+
+themeToggle.addEventListener("click", () => {
+  const root = document.documentElement;
+  const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  root.setAttribute("data-theme", next);
+  try { localStorage.setItem("theme", next); } catch (e) {}
+  syncSwitch();
+});
     </script>
   </body>
 </html>
